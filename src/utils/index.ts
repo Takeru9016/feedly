@@ -1,0 +1,1 @@
+export { normalizeAttribute } from "./normalizeAttribute";
