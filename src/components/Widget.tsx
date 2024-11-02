@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { MessageCircleIcon, StarIcon } from "lucide-react";
 
+import tailwindStyles from "../index.css?inline";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import tailwindStyles from "../index.css?inline";
+import { supabase } from "../utils";
 
-export default function Widget() {
+export default function Widget({ projectId }: { projectId: number }) {
   const [rating, setRating] = useState(3);
   const [submitted, setSubmitted] = useState(false);
 
@@ -16,17 +17,21 @@ export default function Widget() {
     setRating(index + 1);
   };
 
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const data = {
-      name: (form.elements.namedItem("name") as HTMLInputElement).value,
-      email: (form.elements.namedItem("email") as HTMLInputElement).value,
-      feedback: (form.elements.namedItem("feedback") as HTMLInputElement).value,
-      rating,
+      p_project_id: projectId,
+      p_user_name: (form.elements.namedItem("name") as HTMLInputElement).value,
+      p_user_email: (form.elements.namedItem("email") as HTMLInputElement)
+        .value,
+      p_message: (form.elements.namedItem("feedback") as HTMLInputElement)
+        .value,
+      p_rating: rating,
     };
+    const { data: returnedData } = await supabase.rpc("add_feedback", data);
     setSubmitted(true);
-    console.log("Form Submitted", data);
+    console.log("Form Submitted", returnedData);
   };
 
   return (

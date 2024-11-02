@@ -3,7 +3,7 @@ import { Widget } from "./components";
 export default function App() {
   return (
     <>
-      <Widget />
+      <Widget projectId={2} />
     </>
   );
 }
